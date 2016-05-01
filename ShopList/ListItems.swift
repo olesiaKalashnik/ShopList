@@ -8,6 +8,7 @@
 
 import Foundation
 
+// Anton: do you still need these classes?
 class CurrentListItem {
     var title = String()
     var inGlobalList : GlobalListItem

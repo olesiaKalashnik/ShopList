@@ -31,9 +31,11 @@ class AddItemViewController: UIViewController, UIPickerViewDelegate, UITextField
         if let newItem = newItemTextField.text {
             if newItem != "" {
                 let selectedCategoryName = allCategoriesNames[categoryPickerView.selectedRowInComponent(0)]
+                // Anton: chickin for existence is not controllers responsibility. Consider having "getOrAddItem" in global list.
                 if !globalList.items.contains({$0.title == newItem && $0.category == selectedCategoryName})  {
                     currentList.saveItemInCurrentAndGlobalList(newItem, itemCategory: selectedCategoryName, currentList: currentList, globalList: globalList)
                 } else {
+                    // Anton: merge to cases together. Current list should have "addFromGlobalList" function.
                     if !currentList.items.contains({$0.title == newItem && $0.inGlobalList.category == selectedCategoryName}) {
                         currentList.saveItemInCurrentList(newItem, itemCategory: selectedCategoryName, globalList: globalList)
                     }
@@ -41,6 +43,7 @@ class AddItemViewController: UIViewController, UIPickerViewDelegate, UITextField
             }
         }
         newItemTextField.text = nil
+        // Anton: I don't think you need to set placeholder everytime
         newItemTextField.placeholder = "New Item"
         
         //printOutContentsOfLists()
@@ -66,6 +69,7 @@ class AddItemViewController: UIViewController, UIPickerViewDelegate, UITextField
         return true
     }
     
+    // Anton: what is this for?
     func tabBarController(tabBarController: UITabBarController, didSelectViewController viewController: UIViewController) {
         if let navController = viewController as? UINavigationController {
             if let currentListTVController = navController.visibleViewController as? CurrentListTableViewController {

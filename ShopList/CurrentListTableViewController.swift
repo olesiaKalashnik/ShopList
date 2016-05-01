@@ -15,6 +15,7 @@ class CurrentListTableViewController: UITableViewController {
         didSet {
             let shoppingListTBController = tabBarController as! ShoppingListTabBarController
             shoppingListTBController.currentList.fetchItemsInCurrList()
+            // Anton: why do you need "?" here?
             self.currentListData? = shoppingListTBController.currentList
             hideOutlet?.hidden = currentListData?.items.count < 1
             self.tableView.reloadData()
@@ -23,6 +24,7 @@ class CurrentListTableViewController: UITableViewController {
     
     @IBOutlet weak var hideOutlet: UIButton!
     
+    // Anton: what is that for?
     private func updateCurrentShoppingListOnGlobalLevel() {
         let shoppingListTBController = tabBarController as! ShoppingListTabBarController
         if let list = currentListData {
@@ -31,6 +33,7 @@ class CurrentListTableViewController: UITableViewController {
         shoppingListTBController.currentList.saveManagedContext()
     }
     
+    // Anton: avoid using functions without parameters (other then getters). Such functions usualy can be splited into two functions: getSomeData and doStuffWithData
     private func updateListWithSelectedGlobalItems() {
         let shoppingListTBController = tabBarController as! ShoppingListTabBarController
         let listToAdd = shoppingListTBController.globalList.items.filter {$0.isSelected == true}
@@ -44,6 +47,7 @@ class CurrentListTableViewController: UITableViewController {
         }
     }
     
+    // Anton: you already have this function in a different file, don't you?
     private func unique<S : SequenceType, T : Hashable where S.Generator.Element == T>(source: S) -> [T] {
         var addedDict = [T:Bool]()
         return source.filter { addedDict.updateValue(true, forKey: $0) == nil } // updateValue: Returns the value that was replaced, or nil if a new key-value pair was added.
@@ -55,6 +59,7 @@ class CurrentListTableViewController: UITableViewController {
             let itemsToBeDeleted = list.items.filter {$0.isMarkedAsCompleted}
             list.items = filteredListOfItems
 
+            // Anton: Dealing with managed context and all the CoreData stuff should not be responsibility of TableViewController. Consider add corresponding methods to the Current/Global list
             let managedContext = appDelegate.managedObjectContext
             for item in itemsToBeDeleted {
                 item.inGlobalList.isSelected = false

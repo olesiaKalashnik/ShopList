@@ -12,22 +12,24 @@ import CoreData
 
 class ShoppingList {
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    // Anton: break this function into pieces. You might have functions "createGlobalEntity", "createCurrentEntity", "saveGlobalEntity" and so on.
+    // Try to separate computations from side effects. That means you will need to have separate functions for cretaing items and for saving them.
+    // Also, adding item to the global list and to the current list clearly are two separate operations, so it makes sence to have two separate functions (even though you might consider having one additional function that combines those two).
     func saveItemInCurrentAndGlobalList(itemName: String, itemCategory: String, currentList: CurrentList, globalList: GlobalList) {
         let appDelegate =
             UIApplication.sharedApplication().delegate as! AppDelegate
         
         let managedContext = appDelegate.managedObjectContext
         
-        let entityCurrent =  NSEntityDescription.entityForName("CurrentListEntity",
-                                                               inManagedObjectContext:managedContext)
+        let entityCurrent =  NSEntityDescription.entityForName("CurrentListEntity", inManagedObjectContext:managedContext)
         
-        let currItem = CurrentListEntity(entity: entityCurrent!,
-                                         insertIntoManagedObjectContext: managedContext)
+        // Anton: avoid using ! operator. Use "if let ..." instead.
+        let currItem = CurrentListEntity(entity: entityCurrent!, insertIntoManagedObjectContext: managedContext)
         
-        let entityGlobal = NSEntityDescription.entityForName("GlobalListEntity",
-                                                             inManagedObjectContext:managedContext)
-        let globalItem = GlobalListEntity(entity: entityGlobal!,
-                                          insertIntoManagedObjectContext: managedContext)
+        // Anton: same here -- avoid using ! operator.
+        let entityGlobal = NSEntityDescription.entityForName("GlobalListEntity", inManagedObjectContext:managedContext)
+        let globalItem = GlobalListEntity(entity: entityGlobal!, insertIntoManagedObjectContext: managedContext)
+        
         currItem.title = itemName
         currItem.markedAsCompleted = false
         currItem.details = ""
@@ -49,7 +51,7 @@ class ShoppingList {
         }
     }
 
-    
+    // Anton: what is this for?
     func deleteAllData(entity: String)
     {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -70,6 +72,7 @@ class ShoppingList {
         }
     }
     
+    // Anton: atta girl!
     func unique<S : SequenceType, T : Hashable where S.Generator.Element == T>(source: S) -> [T] {
         var addedDict = [T:Bool]()
         return source.filter { addedDict.updateValue(true, forKey: $0) == nil }
@@ -89,6 +92,14 @@ class ShoppingList {
 class CurrentList : ShoppingList {
     var items = [CurrentListEntity]()
     var asDictionary : [String : [CurrentListEntity]] {
+        // Anton: Nice. Other way to implement this would be just iterate over items and add each to the corresponding list:
+//        for i in items {
+//            if var list = answerDict[i.inGlobalList.category] {
+//                list.append(i)
+//            } else {
+//                answerDict[i.inGlobalList.category] = [i]
+//            }
+//        }
         var answerDict = [String:[CurrentListEntity]]()
         var itemsInCategory = [CurrentListEntity]()
         let categories = unique(items.map {$0.inGlobalList.category})
@@ -100,13 +111,13 @@ class CurrentList : ShoppingList {
     }
     
     var categoriesAsList : [String] {
-        let dict = self.asDictionary
-        return dict.keys.map {$0}
+        let dict = self.asDictionary // Anton: you don't need temp local variable
+        return dict.keys.map {$0} // Anton: this map call does nothing
     }
     
     var groupedItemsAsList : [[CurrentListEntity]] {
-        let categorizedItems = self.asDictionary
-            return categorizedItems.values.map { $0 }
+        let categorizedItems = self.asDictionary // Anton: you don't need temp local variable
+        return categorizedItems.values.map { $0 }
     }
 
     func saveItemInCurrentList(itemName: String, itemCategory: String, globalList: GlobalList) {

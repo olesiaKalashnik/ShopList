@@ -14,6 +14,7 @@ import CoreData
 
 extension CurrentListEntity {
 
+    // Anton: You don't need title here -- it's already in the inGlobalList relation
     @NSManaged var title: String
     @NSManaged var markedAsCompleted: NSNumber
     @NSManaged var details: String?

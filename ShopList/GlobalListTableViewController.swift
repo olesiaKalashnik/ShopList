@@ -16,6 +16,7 @@ class GlobalListTableViewController: UITableViewController {
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     var globalListData : GlobalList?  {
+        // Anton: does you even set it anywhere?
         didSet {
             shoppingListTBC = tabBarController as? ShoppingListTabBarController
             shoppingListTBC!.globalList.fetchItemsInGlobalList()
@@ -35,6 +36,7 @@ class GlobalListTableViewController: UITableViewController {
     
     var managedContext: NSManagedObjectContext!
 
+    // Anton: avoid copypasting same code everywhere!
     private func unique<S : SequenceType, T : Hashable where S.Generator.Element == T>(source: S) -> [T] {
         var addedDict = [T:Bool]()
         return source.filter { addedDict.updateValue(true, forKey: $0) == nil } // updateValue: Returns the value that was replaced, or nil if a new key-value pair was added.
@@ -125,6 +127,7 @@ class GlobalListTableViewController: UITableViewController {
             shoppingListTBC = tabBarController as? ShoppingListTabBarController
             let globalListGrouped = shoppingListTBC!.globalList.groupedItemsAsList
             let itemToBeRemoved = globalListGrouped[indexPath.section][indexPath.row]
+            // Anton: don't deal with CoreData from the ViewControllers.
             let managedContext = appDelegate.managedObjectContext
             
             let itemTiBeRemovedInCurrList = shoppingListTBC!.currentList.items.filter {$0.inGlobalList == itemToBeRemoved}

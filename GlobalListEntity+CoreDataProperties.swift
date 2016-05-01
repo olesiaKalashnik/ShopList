@@ -16,6 +16,7 @@ extension GlobalListEntity {
 
     @NSManaged var title: String
     @NSManaged var selected: NSNumber
+    // Anton: Consider using own type (or at least typealias) for category
     @NSManaged var category: String
     var isSelected: Bool {
         get {
